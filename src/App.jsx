@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import NoteForm from "./components/NoteForm";
-import NoteList from "./components/NoteList";
-import Loader from "./components/Loader";
-import EmptyState from "./components/EmptyState";
+import NoteForm from "./Components/NoteForm";
+import NoteList from "./Components/NoteList";
+import Loader from "./Components/Loader";
+import EmptyState from "./Components/EmptyState";
 import "./App.css";
 
 function App() {
