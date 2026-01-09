@@ -1,54 +1,56 @@
 import React, { useState, useEffect } from "react";
-import NoteForm from "./Components/NoteForm";
-import NoteList from "./Components/NoteList";
-import Loader from "./Components/Loader";
-import EmptyState from "./Components/EmptyState";
+import NoteForm from "./components/NoteForm";
+import NoteList from "./components/NoteList";
+import Loader from "./components/Loader";
+import EmptyState from "./components/EmptyState";
 import "./App.css";
 
 function App() {
-  // notes array and loading status
   const [notes, setnotes] = useState([]);
   const [loading, setloading] = useState(true);
 
-  // stimulate api call with fake delay
   useEffect(() => {
     const timer = setTimeout(() => {
       setloading(false);
     }, 1500);
-    // clean up
     return () => clearTimeout(timer);
   }, []);
-  // handler function to add note
+
   const addNote = (newnote) => {
     setnotes((prevnotes) => [newnote, ...prevnotes]);
   };
-  // handler function to delete note
+
   const deleteNote = (id) => {
     setnotes((prevnotes) => prevnotes.filter((note) => note.id !== id));
   };
+
   return (
-    <>
-      <div className="app-container">
-        <header className="app-header">
-          <h1>Notes App</h1>
-        </header>
+    <div className="app-container">
+      <header className="app-header">
+        <h1>Notes Manager</h1>
+      </header>
 
-        <main className="main-content">
-          {/* Always show form unless strictly required otherwise, but standard UX keeps it visible */}
+      {/* This main container becomes the Flex Parent */}
+      <main className="main-content">
+        
+        {/* Left Side: Fixed Sidebar */}
+        <aside className="sidebar">
           <NoteForm onAdd={addNote} />
+        </aside>
 
-          <div className="notes-section">
-            {loading ? (
-              <Loader />
-            ) : notes.length === 0 ? (
-              <EmptyState />
-            ) : (
-              <NoteList notes={notes} onDelete={deleteNote} />
-            )}
-          </div>
-        </main>
-      </div>
-    </>
+        {/* Right Side: Scrollable List */}
+        <section className="notes-display">
+          {loading ? (
+            <Loader />
+          ) : notes.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <NoteList notes={notes} onDelete={deleteNote} />
+          )}
+        </section>
+        
+      </main>
+    </div>
   );
 }
 

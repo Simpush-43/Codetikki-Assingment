@@ -1,3 +1,4 @@
+/* --- Global Reset --- */
 :root {
   --primary-color: #007bff;
   --card-bg: #ffffff;
@@ -6,37 +7,87 @@
 }
 
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: #22a3c3;
+  font-family: "Inter", system-ui, sans-serif;
+  background: #1f7ed1;
   background: linear-gradient(
     0deg,
-    rgba(34, 163, 195, 1) 0%,
+    rgba(31, 126, 209, 1) 34%,
     rgba(253, 187, 45, 1) 100%
   );
   color: var(--text-color);
   margin: 0;
   padding: 0;
-  height: 100vh;
+  box-sizing: border-box;
 }
 
+/* --- Layout Containers --- */
 .app-container {
-  max-width: 600px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .app-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 20px;
+  flex-shrink: 0;
 }
 
-/* Form Styles */
+/* --- The Split Layout Logic --- */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* --- Sidebar (Form) --- */
+.sidebar {
+  flex-shrink: 0;
+}
+
+/* --- Notes Display (Right Side) --- */
+.notes-display {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* --- Desktop View (Side-by-Side) --- */
+@media (min-width: 768px) {
+  .main-content {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .sidebar {
+    width: 350px;
+    position: sticky;
+    top: 0;
+  }
+
+  .notes-display {
+    /* The notes take up the rest of the space */
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    padding: 10px;
+    /* Custom Scrollbar for Chrome/Safari */
+    scrollbar-width: thin;
+    scrollbar-color: #ccc transparent;
+  }
+}
+
+/* --- Component Styles --- */
 .note-form-card {
   background: var(--card-bg);
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e1e4e8;
 }
 
 .form-group {
@@ -46,109 +97,96 @@ body {
 input,
 textarea {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box; /* Fixes padding width issues */
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
 }
 
-input.input-error {
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.input-error {
   border-color: var(--error-color);
+  background-color: #fff8f8;
 }
 
-.error-msg {
-  color: var(--error-color);
-  font-size: 0.875rem;
-  margin-top: 5px;
-  display: block;
-}
-
-button[type="submit"] {
+button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   background-color: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 1rem;
+  font-weight: 600;
+  transition: opacity 0.2s;
 }
 
 button:disabled {
-  background-color: #ccc;
+  background-color: #94c6ff;
   cursor: not-allowed;
 }
 
-/* List & Item Styles */
+/* Note Item */
 .note-item {
   background: var(--card-bg);
   padding: 15px;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 12px;
+  border-left: 4px solid var(--primary-color);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  animation: fadeIn 0.3s ease-in;
 }
 
-.note-content {
-  flex: 1;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .note-title {
   margin: 0 0 5px 0;
   font-size: 1.1rem;
+  color: #2c3e50;
 }
 
 .note-desc {
   margin: 0;
   color: #666;
   font-size: 0.95rem;
+  line-height: 1.4;
+  white-space: pre-wrap; /* Preserves newlines in description */
 }
 
 .delete-btn {
-  background: none;
-  border: none;
+  background: transparent;
   color: #999;
+  width: auto;
+  padding: 5px 10px;
   font-size: 1.5rem;
-  cursor: pointer;
-  line-height: 1;
-  padding: 0 0 0 10px;
 }
 
 .delete-btn:hover {
   color: var(--error-color);
 }
 
-/* Loader Styles */
-.loader-container {
-  text-align: center;
-  padding: 20px;
-}
-
-.spinner {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid var(--primary-color);
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 10px auto;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
+.loader-container,
 .empty-state {
   text-align: center;
-  color: #777;
-  padding: 20px;
-  border: 2px dashed #ddd;
-  border-radius: 8px;
+  padding: 40px;
+  color: #888;
 }
